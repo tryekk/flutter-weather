@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 Future<Album> fetchAlbum() async {
   // String endTime = df.format(c.getTime());
   String apikey = "z6N3a8QW0Cwy80k9sTxvPNHCGqvRFq5f";
-  List<double> location = [51.4816, -3.1791];
+//        double[] location = {51.4816, -3.1791};
   List<String> fields = ["temperature", "weatherCode", "precipitationProbability", "sunriseTime",
     "sunsetTime", "humidity", "windSpeed", "windDirection", "temperatureApparent",
     "grassIndex", "treeIndex"];
@@ -29,6 +29,8 @@ Future<Album> fetchAlbum() async {
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
+    Map<String, dynamic> data = jsonDecode(response.body);
+    debugPrint(data.toString());
     return Album.fromJson(jsonDecode(response.body));
   } else {
     // If the server did not return a 200 OK response,
@@ -38,15 +40,15 @@ Future<Album> fetchAlbum() async {
 }
 
 class Album {
-  final String title;
+  final String data;
 
   Album({
-    required this.title,
+    required this.data,
   });
 
   factory Album.fromJson(Map<String, dynamic> json) {
     return Album(
-      title: json['title'],
+      data: json['data'].toString(),
     );
   }
 }
@@ -85,9 +87,7 @@ class _MyAppState extends State<MyApp> {
             future: futureAlbum,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return Text(snapshot.data!.title);
-              } else if (snapshot.hasError) {
-                return Text("${snapshot.error}");
+                return Text(snapshot.data!.data);
               }
               // By default, show a loading spinner.
               return CircularProgressIndicator();
